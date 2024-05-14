@@ -7,7 +7,7 @@ const CategoryList = async () => {
     // Pegar as categorias do banco de dados
     // Renderizar um item para cada categoria
     return ( 
-        <div className="flex overflow-scroll">
+        <div className="flex overflow-x-scroll">
         {categories.map(category => (
             <CategoryItem key={category.id} category={category} />
             ))}
