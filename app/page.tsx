@@ -5,31 +5,49 @@ import Search from "./_components/search";
 import ProductList from "./_components/product-list";
 import { Button } from "./_components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
+import { db } from "./_lib/prisma";
 
-const name ="";
+const name = "";
 
-const Home = () => {
+const Home = async () => {
+
+  const products = await db.product.findMany({
+    where: {
+      discountPercentage: {
+        gt: 0
+      }
+    },
+    take: 15,
+    include: {
+      restaurant: {
+        select: {
+          name: true
+        }
+      }
+    }
+  })
+
   return (
     <>
-      <Header/>
+      <Header />
       <div className="px-5 pt-6">
-        <Search  />
+        <Search />
       </div>
       <div className="px-5 pt-6">
-        <CategoryList/>
+        <CategoryList />
       </div>
       <div className="px-5 pt-6">
-        <Image src="/promo-banner-01.svg" alt="Até 30% de desconto em pizzas" width={0} height={0} className="w-full h-auto max-h-[200px]" sizes="100vw"/>
+        <Image src="/promo-banner-01.svg" alt="Até 30% de desconto em pizzas" width={0} height={0} className="w-full h-auto max-h-[200px]" sizes="100vw" />
       </div>
       <div className="pt-6 space-y-4">
         <div className="px-5 flex justify-between items-center">
           <h2 className="font-semibold">Pedidos Recomendados</h2>
           <Button variant='ghost' className="text-primary p-0 hover:bg-transparent h-fit">
             Ver todos
-            <ChevronRightIcon size={16}/>
+            <ChevronRightIcon size={16} />
           </Button>
         </div>
-        <ProductList />
+        <ProductList products={products} />
       </div>
     </>
   )
