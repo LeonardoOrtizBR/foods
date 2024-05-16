@@ -18,8 +18,8 @@ const RestaurantItem = ({ restaurant }: RestaurantItemProps) => {
                     <StarIcon size={12} className="fill-yellow-400 text-yellow-400" />
                     <span className="font-semibold text-xs">5.0</span>
                 </div>
-                <Button size="icon" className=" absolute right-2 top-2 bg-muted-foreground opacity-80 rounded-full h-7 w-7" >
-                    <HeartIcon size={16} className=" fill-white" />
+                <Button size="icon" className=" absolute right-2 top-2 bg-muted-foreground opacity-80 rounded-full h-6 w-6" >
+                    <HeartIcon size={14} className=" fill-white" />
                 </Button>
             </div>
             {/* Texto */}
