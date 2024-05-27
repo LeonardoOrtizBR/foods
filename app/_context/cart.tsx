@@ -21,7 +21,17 @@ interface ICartContext {
     subtotalPrice: number;
     totalPrice: number;
     totalDiscounts: number;
-    addProductToCart: (product: Product, quantity: number) => void;
+    addProductToCart: ({ product, quantity, emptyCart }: {
+        product: Prisma.ProductGetPayload<{
+            include: {
+                restaurant: {
+                    select: {
+                        deliveryFee: true
+                    }
+                }
+            }
+        }>, quantity: number, emptyCart?: boolean
+    }) => void;
     decreaseProductQuantity: (productId: string) => void;
     increaseProductQuantity: (productId: string) => void;
     removeProductFromCart: (productId: string) => void;
@@ -50,7 +60,7 @@ export const CartProdivder = ({ children }: { children: ReactNode }) => {
     const totalPrice = useMemo(() => {
         return products.reduce((acc, product) => {
             return acc + calculateProductTotalPrice(product) * product.quantity
-        }, 0)
+        }, 0) + Number(products?.[0]?.restaurant?.deliveryFee)
     }, [products])
 
     const totalDiscounts = subtotalPrice - totalPrice
@@ -90,7 +100,23 @@ export const CartProdivder = ({ children }: { children: ReactNode }) => {
         return setProducts((prev) => prev.filter((product) => product.id !== productId))
     }
 
-    const addProductToCart = (product: Product, quantity: number) => {
+    const addProductToCart = (
+        { product, quantity, emptyCart }: {
+            product: Prisma.ProductGetPayload<{
+                include: {
+                    restaurant: {
+                        select: {
+                            deliveryFee: true
+                        }
+                    }
+                }
+            }>, quantity: number, emptyCart?: boolean
+        }
+    ) => {
+        if (emptyCart) {
+            setProducts([])
+        }
+
         // verificar se o poroduto ja esta no carrinho
         const isProductAlreadyOnCart = products.some(cartProduct => cartProduct.id === product.id)
         // se ele estiver, aumentar a sua quantidade
